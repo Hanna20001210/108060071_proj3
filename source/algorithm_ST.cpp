@@ -79,10 +79,10 @@ bool Re_Board::place_orb(int i, int j, Player * player){
 void Re_Board::cell_reaction_marker(){
     // Mark the next cell whose number of orbs is equal to the capacity
     for(int i = 0; i < ROW; i++){
-            for(int j = 0; j < COL; j++){
-                cell_is_full(&cells[i][j]);
-            }
+        for(int j = 0; j < COL; j++){
+            cell_is_full(&cells[i][j]);
         }
+    }
 }
 
 bool Re_Board::cell_is_full(Cell* cell){ //true:cell滿了
@@ -249,6 +249,7 @@ char Re_Board::get_cell_color(int i, int j){
  * 4. The function that print out the current board statement
 *************************************************************************/
 void try_each_cell(Re_Board,Player,int&,int&);
+void check_capacity(Re_Board,int,int,int&,int&);
 
 void algorithm_A(Board board, Player player, int index[]){
     int row, col;
@@ -271,7 +272,16 @@ void try_each_cell(Re_Board board,Player player,int &row,int &col){
                     row=i;
                     col=j;
                 }
+                else if (sum_eat==max){
+                    check_capacity(board,i,j,row,col);
+                }
             }
         }
+    }
+}
+void check_capacity(Re_Board board,int i, int j,int &row,int &col){
+    if((board.get_capacity(i,j)-board.get_orbs_num(i,j))<(board.get_capacity(row,col)-board.get_orbs_num(row,col))){
+        row = i;
+        col = j;
     }
 }
