@@ -113,7 +113,6 @@ void Re_Board::cell_explode(int i, int j){
     char color = cells[i][j].get_color();
 
     cell_reset(i, j);
-    
     if( i + 1 < ROW){ //非最下列 ->下面一個加1
         neighbor_color = cells[i+1][j].get_color();
         if(neighbor_color != color){
