@@ -10,7 +10,7 @@ int sum_eat;
 #define COL 6
 
 class Re_Board{
-    private:
+    public:
         Cell cells[ROW][COL];                       // The 5*6 board whose index (0,0) is start from the upper left corner
         void cell_reaction_marker();                // After the explosion, mark all the cell that  will explode in next iteration
         bool cell_is_full(Cell* cell);              // Check wether the cell is full of orbs and set the explosion variable to be true
@@ -56,7 +56,7 @@ Re_Board::Re_Board(Board board) {
 }
 bool Re_Board::place_orb(int i, int j, Player * player){
     
-    if(index_range_illegal(i, j) || !placement_illegal(*player, cells[i][j])){
+    if(!index_range_illegal(i, j) && !placement_illegal(*player, cells[i][j])){
         int temp = cells[i][j].get_orbs_num();
         temp += 1;
         cells[i][j].set_orbs_num(temp);
@@ -66,7 +66,7 @@ bool Re_Board::place_orb(int i, int j, Player * player){
         player->set_illegal();
         return false;
     }
-    sum_eat=0;
+    //sum_eat=0;
     if(cell_is_full(&cells[i][j])){
         cell_explode(i, j);
         cell_reaction_marker();
@@ -113,7 +113,7 @@ void Re_Board::cell_explode(int i, int j){
     char color = cells[i][j].get_color();
 
     cell_reset(i, j);
-
+    
     if( i + 1 < ROW){ //非最下列 ->下面一個加1
         neighbor_color = cells[i+1][j].get_color();
         if(neighbor_color != color){
@@ -253,20 +253,25 @@ void check_capacity(Re_Board,int,int,int&,int&);
 
 void algorithm_A(Board board, Player player, int index[]){
     int row, col;
-    int color = player.get_color();
-    
+    row=0;
+    col=0;
     Re_Board re_board(board);
     try_each_cell(re_board, player,row,col);
     index[0] = row;
     index[1] = col;
-    
-}
+    cout<<sum_eat<<endl;
+};
 
 void try_each_cell(Re_Board board,Player player,int &row,int &col){
     int max=0;
     for(int i = 0; i < ROW; i++) {
         for(int j = 0; j < COL; j++) {
             if(board.place_orb(i,j,&player)){
+                /*if(board.win_the_game(player)){
+                    row=i;
+                    col=j;
+                    return;
+                }*/
                 if(sum_eat>max){
                     max=sum_eat;
                     row=i;
